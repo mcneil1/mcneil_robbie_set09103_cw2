@@ -62,11 +62,18 @@ def logout():
 @app.route('/register/', methods=['GET','POST'])
 def register():
 	error = None
+
 	if request.method == 'POST':
+		userEmail = request.form['email']
+		newUser = UserDB.query.filter_by(email=userEmail).first()
+
 		if request.form['password'] != request.form['password-repeat']:
 			error = 'Passwords do not match, please try again.'
-		else:
-			userEmail = request.form['email']
+		
+		elif newUser.email is not None:
+			error = 'It looks like that email address is already registered at this site.'
+
+		else:	
 			userPassword = request.form['password']
 			userFName = request.form['first_name']
 			userLName = request.form['last_name']	
