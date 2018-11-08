@@ -15,7 +15,6 @@ db = SQLAlchemy(app)
 from models import *
 
 
-
 def login_required(f):
 	@wraps(f)
 	def wrap(*args, **kwargs):
@@ -44,7 +43,7 @@ def login():
 		if user is None:
 			error = "Email is incorrect"
 
-		elif user.password != enteredPassword:
+		elif bcrypt.check_password_hash(user.password, enteredPassword) != True:
 			error = "Password is Incorrect"
 				
 		else:
@@ -73,8 +72,8 @@ def register():
 		if request.form['password'] != request.form['password-repeat']:
 			error = 'Passwords do not match, please try again.'
 		
-		elif newUser.email is not None:
-			error = 'It looks like that email address is already registered at this site.'
+#		elif newUser.email is not None:
+#			error = 'It looks like that email address is already registered at this site.'
 
 		else:	
 			userPassword = request.form['password']
