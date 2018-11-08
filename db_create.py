@@ -3,6 +3,6 @@ from models import UserDB
 
 db.create_all()
 
-db.session.add(UserDB("rmcneil98@outlook.com","Robbie","McNeil","Admin"))
+db.session.add(UserDB("robbiemcn98@gmail.com","Robbie","McNeil","password"))
 
 db.session.commit()

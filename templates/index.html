@@ -9,10 +9,23 @@
 
 <div class="container" >
 
-	<h1>Welcome to Flask!</h1>
-	{% for message in get_flashed_messages() %}
-		{{ message }}
+
+	{% for messsage in get_flashed_messages() %}
+                {{ message }}
+        {% endfor %}
+	<h1>welcome to FriendSpot!</h1>
+	
+	<hr>
+	<br>
+	{% for post in posts %}
+		<div id="rcorners">
+			<h4> {{ post.author.first_name }} {{ post.author.last_name }} 
+			<hr>
+			</h4><h2><strong> {{ post.header }} </strong></h2>
+ 			<h4>{{ post.body }} </h4>	
+		</div>
 	{% endfor %}
+
 
 </div>
 

@@ -1,9 +1,11 @@
 from flask import Flask, render_template, redirect, url_for, request, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from functools import wraps
+from flask_bcrypt import Bcrypt
 #import sqlite3
 
 app = Flask(__name__)
+bcrypt = Bcrypt(app)
 
 app.secret_key = "}lm';(:W7tA5Bot"
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
@@ -28,7 +30,8 @@ def login_required(f):
 @app.route('/')
 @login_required
 def home():
-	return render_template('index.html')
+	posts = db.session.query(UserPosts).all()
+	return render_template('index.html',posts=posts)
 
 
 @app.route('/login/', methods=['GET', 'POST'])
