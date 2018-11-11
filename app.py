@@ -2,6 +2,7 @@ from flask import Flask, render_template, redirect, url_for, request, session, f
 from flask_sqlalchemy import SQLAlchemy
 from functools import wraps
 from flask_bcrypt import Bcrypt
+from datetime import datetime
 #import sqlite3
 
 app = Flask(__name__)
@@ -26,9 +27,18 @@ def login_required(f):
 	return wrap
 
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 @login_required
 def home():
+	if request.method == 'POST':
+		title = request.form['title']
+		body = request.form['body']
+		date = datetime.now()
+		email = session['email']
+		post = UserPosts(header=title,body=body,date=date,author_email=email)
+		db.session.add(post)
+		db.session.commit()
+
 	posts = db.session.query(UserPosts).all()
 	return render_template('index.html',posts=posts)
 
@@ -48,6 +58,7 @@ def login():
 				
 		else:
 			session['logged_in'] = True
+			session['email'] = request.form['email']
 			flash('Successfully logged in!')
 			return redirect(url_for('home'))
 	return render_template('login.html', error=error)
@@ -67,15 +78,17 @@ def register():
 
 	if request.method == 'POST':
 		userEmail = request.form['email']
+		userName = request.form['username']
 		newUser = UserDB.query.filter_by(email=userEmail).first()
+		newUsername = UserDB.query.filter_by(username=userName).scalar()
 
 		if request.form['password'] != request.form['password-repeat']:
 			error = 'Passwords do not match, please try again.'
-		
-#		elif newUser.email is not None:
-#			error = 'It looks like that email address is already registered at this site.'
 
-		else:	
+		if newUsername is not None:
+			error = 'Username is taken!'
+		
+		elif newUser is None:	
 			userPassword = request.form['password']
 			userFName = request.form['first_name']
 			userLName = request.form['last_name']	
@@ -86,6 +99,9 @@ def register():
 
 			session['logged_in'] = True
 			return redirect(url_for('home'))
+	
+		else: 
+			error = 'Username is taken!'
 	return render_template('signup.html', error=error)
 
 

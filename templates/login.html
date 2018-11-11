@@ -2,8 +2,15 @@
 {% block content %}
 
 <div class="container">
-	<h1>Please login</h1>
+	<h1>Welcome to FriendSpot!</h1>
+
+        {% for message in get_flashed_messages() %}
+                {{ message }}
+        {% endfor %}
+
+	<hr>
 	<br>
+	<h2>Please login:</h2>
 	<form action="" method="post">
 		<label for="email"><b>Email</b></label>
 		<input type="text" placeholder="Email" name ="email" value="{{ request.form.email }}">
@@ -16,9 +23,7 @@
 	{% if error %}
 		<p class="error"><strong>Error:</strong> {{ error }}
 	{% endif %}
-	{% for message in get_flashed_messages() %}
-		{{ message }} 
-	{% endfor %}
+
 </div>
 {% endblock %}
 

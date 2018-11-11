@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
 
-<form action="/register/" method="post">
-	<div class="container">
+<div class="container">
+	<form action="/register/" method="post">
+
 		<h1>Register</h1>
 		<p>Enter details and click register to create an account.</p>
 		<hr>
@@ -10,6 +11,9 @@
 		<label for="email"><b>Email</b></label>
 		<input type="text" placeholder="Enter email address" name="email" required>
 		
+		<label for="username"><b>Username</b></label>
+		<input type="text" placeholder="Enter username" name="username" required>
+	
 		<label for="first_name"><b>First Name</b></label>
 		<input type="text" placeholder="Enter your first name" name="first_name" required>
 
@@ -22,16 +26,16 @@
 		<label for="password-repeat"><b>Repeat Passord</b></label>
 		<input type="password" placeholder="Repeat password" name="password-repeat" required>
 		{% if error %}
-			<p class="error"><strong>Error:</strong> {{ error }}
+			<p class="error"><strong>Error:</strong> {{ error }}</p>
 		{% endif %}
 		<hr>
 		
 		<button type="submit" class="registerbtn" value="Register">Register</button>
-	</div>
 
-	<div class="container signin">
+	</form>
 		<p>Already have an account? <a href="/login/">Log in</a>.</p>
-	</div>
-</form>
+	
+</div>
+
 
 {% endblock %}
