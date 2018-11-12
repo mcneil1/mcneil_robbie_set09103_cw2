@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+
+<ul> 
+	<li><a href="http://set09103.napier.ac.uk:9159/">Home</a></li>
+	<li><a class="active" href={{ profileURL }}>My Profile</a></li>
+	<li><a href="http://set09103.napier.ac.uk:9159/logout/">Log out</a></li>
+</ul>
+
+<div class="container">
+
+<h1>{{ name }}</h1>
+<hr>
+{% for post in posts %}
+	<div id="rcorners">
+		<h4> {{ post.author.first_name }} {{ post.author.last_name }} </h4>
+		<h6> {{ post.date.strftime("%d") }} {{ post.date.strftime("%b") }} at {{ post.date.strftime("%I") }}:{{ post.date.strftime("%M") }} {{ post.date.strftime("%p") }}</h6>
+		<hr>
+		<h2><strong> {{ post.header }} </strong></h2>
+		<h4>{{ post.body }} </h4>
+	</div>
+        {% endfor %}
+
+
+</div>
+
+{% endblock %}

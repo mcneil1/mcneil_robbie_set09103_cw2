@@ -1,9 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
 
+
+
 <ul>
-  <li><a class="active" href="http://set09103.napier.ac.uk:9159/">Home</a></li>
-  <li><a href="http://set09103.napier.ac.uk:9159/logout/">Log out</a></li>
+	<li><a class="active" href="http://set09103.napier.ac.uk:9159/">Home</a></li>
+ 	<li><a href={{ profileURL }}>My Profile</a></li>
+	<li><a href="http://set09103.napier.ac.uk:9159/logout/">Log out</a></li>
 </ul>
 
 

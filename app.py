@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from functools import wraps
 from flask_bcrypt import Bcrypt
 from datetime import datetime
+from sqlalchemy import desc
 #import sqlite3
 
 app = Flask(__name__)
@@ -22,7 +23,7 @@ def login_required(f):
 		if 'logged_in' in session:
 			return f(*args, **kwargs)
 		else:
-			flash('You mut login to access this page')
+			flash('You must login to access this page')
 			return redirect(url_for('login'))
 	return wrap
 
@@ -40,7 +41,10 @@ def home():
 		db.session.commit()
 
 	posts = db.session.query(UserPosts).all()
-	return render_template('index.html',posts=posts)
+	posts.reverse()
+	userUsername = session['username']
+	profileURL = "http://set09103.napier.ac.uk:9159/profile/" + userUsername + "/" 
+	return render_template('index.html',posts=posts,profileURL=profileURL)
 
 
 @app.route('/login/', methods=['GET', 'POST'])
@@ -59,6 +63,7 @@ def login():
 		else:
 			session['logged_in'] = True
 			session['email'] = request.form['email']
+			session['username'] = user.username
 			flash('Successfully logged in!')
 			return redirect(url_for('home'))
 	return render_template('login.html', error=error)
@@ -91,19 +96,35 @@ def register():
 		elif newUser is None:	
 			userPassword = request.form['password']
 			userFName = request.form['first_name']
-			userLName = request.form['last_name']	
-				
-			user = UserDB(email=userEmail,first_name=userFName,last_name=userLName,password=userPassword)
+			userLName = request.form['last_name']			
+	
+			user = UserDB(email=userEmail,username=userName,first_name=userFName,last_name=userLName,password=userPassword)
 			db.session.add(user)
 			db.session.commit()			
 
 			session['logged_in'] = True
+			session['email'] = userEmail
+			session['username'] = userName
 			return redirect(url_for('home'))
 	
 		else: 
 			error = 'Username is taken!'
 	return render_template('signup.html', error=error)
 
+@app.route('/profile/<username>/')         
+@login_required
+def profile(username):
+		
+	user = UserDB.query.filter_by(email=session['email']).first()
+	name = user.first_name + " " + user.last_name	
+	userUsername = session['username']
+	profileURL = "http://set09103.napier.ac.uk:9159/profile/" + userUsername + "/"
+	email = session['email']
+
+	posts = db.session.query(UserPosts).filter_by(author_email=email).all()
+	posts.reverse()
+ 
+	return render_template('profile.html',posts=posts,name=name,profileURL=profileURL)
 
 #def connect_db():
 #	return sqlite3.connect(app.database)
