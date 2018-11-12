@@ -3,6 +3,7 @@ from app import db, bcrypt
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 from datetime import datetime
+from hashlib import md5
 
 class UserDB(db.Model):
 	
@@ -21,6 +22,11 @@ class UserDB(db.Model):
 		self.first_name = first_name
 		self.last_name = last_name
 		self.password = bcrypt.generate_password_hash(password)
+		
+	def avatar(self, size):
+		digest = md5(self.email.lower().encode('utf-8')).hexdigest()
+		return 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
+            digest, size)
 
 	def __repr__(self):
 		return '{} - {} {} - {}'.format(self.username,self.first_name,self.last_name,self.password)

@@ -132,7 +132,7 @@ def profile(username):
 	posts = db.session.query(UserPosts).filter_by(author_email=email).all()
 	posts.reverse()
  
-	return render_template('profile.html',username=userUsername,posts=posts,name=name,profileURL=profileURL)
+	return render_template('profile.html',user=user,username=userUsername,posts=posts,name=name,profileURL=profileURL)
 
 
 @app.errorhandler(404)

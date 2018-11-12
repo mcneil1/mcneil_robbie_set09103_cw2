@@ -27,8 +27,15 @@
 	<br>
 	{% for post in posts %}
 		<div id="rcorners">
-			<h4> {{ post.author.first_name }} {{ post.author.last_name }} </h4>
-			<h6> {{ post.date.strftime("%d") }} {{ post.date.strftime("%b") }} at {{ post.date.strftime("%I") }}:{{ post.date.strftime("%M") }} {{ post.date.strftime("%p") }}</h6>
+			<table>
+				<tr valign="top">
+					<td><img src="{{ post.author.avatar(50) }}" hspace="10"></td>
+					<td><div>
+						<h4> {{ post.author.first_name }} {{ post.author.last_name }} </h4>
+						<h6> {{ post.date.strftime("%d") }} {{ post.date.strftime("%b") }} at {{ post.date.strftime("%I") }}:{{ post.date.strftime("%M") }} {{ post.date.strftime("%p") }}</h6>
+					</div></td>
+				</tr>
+			</table>
 			<hr>
 			<h2><strong> {{ post.header }} </strong></h2>
  			<h4>{{ post.body }} </h4>

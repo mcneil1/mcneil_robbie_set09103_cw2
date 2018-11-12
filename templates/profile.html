@@ -8,9 +8,15 @@
 </ul>
 
 <div class="container">
-
-<h1>{{ name }} </h1>
-<h4> @{{ username }}</h4>
+<table>
+	<tr valign="top">
+		<td><img src="{{ user.avatar(123) }}"></td>
+		<td><div>
+			<h1>{{ name }} </h1>
+			<h4>@{{ username }}</h4>
+		</div></td>
+	</tr>
+</table>
 <form method="post">
 	<input type="text" placeholder="Title" name="title" required>
 	<input type="text" placeholder="Message" name="body" required>
@@ -19,8 +25,14 @@
 <hr>
 {% for post in posts %}
 	<div id="rcorners">
-		<h4> {{ post.author.first_name }} {{ post.author.last_name }} </h4>
-		<h6> {{ post.date.strftime("%d") }} {{ post.date.strftime("%b") }} at {{ post.date.strftime("%I") }}:{{ post.date.strftime("%M") }} {{ post.date.strftime("%p") }}</h6>
+		<table>
+			<tr valign="top">
+				<td><img src="{{ user.avatar(50) }}" hspace="10"></td>
+				<td><div>
+					<h4> {{ post.author.first_name }} {{ post.author.last_name }} </h4>
+					<h6> {{ post.date.strftime("%d") }} {{ post.date.strftime("%b") }} at {{ post.date.strftime("%I") }}:{{ post.date.strftime("%M") }} {{ post.date.strftime("%p") }}</h6>
+				</div></td>
+		</table>
 		<hr>
 		<h2><strong> {{ post.header }} </strong></h2>
 		<h4>{{ post.body }} </h4>
