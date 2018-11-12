@@ -9,7 +9,13 @@
 
 <div class="container">
 
-<h1>{{ name }}</h1>
+<h1>{{ name }} </h1>
+<h4> @{{ username }}</h4>
+<form method="post">
+	<input type="text" placeholder="Title" name="title" required>
+	<input type="text" placeholder="Message" name="body" required>
+	<button type="submit" class="postbtn" value="Post">Post</button>
+</form>
 <hr>
 {% for post in posts %}
 	<div id="rcorners">

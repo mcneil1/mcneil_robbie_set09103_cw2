@@ -111,7 +111,7 @@ def register():
 			error = 'Username is taken!'
 	return render_template('signup.html', error=error)
 
-@app.route('/profile/<username>/')         
+@app.route('/profile/<username>/', methods=['GET','POST'])         
 @login_required
 def profile(username):
 		
@@ -121,10 +121,23 @@ def profile(username):
 	profileURL = "http://set09103.napier.ac.uk:9159/profile/" + userUsername + "/"
 	email = session['email']
 
+	if request.method == 'POST':
+		title = request.form['title']
+		body = request.form['body']
+		date = datetime.now()
+		post = UserPosts(header=title,body=body,date=date,author_email=email)
+		db.session.add(post)
+		db.session.commit()
+
 	posts = db.session.query(UserPosts).filter_by(author_email=email).all()
 	posts.reverse()
  
-	return render_template('profile.html',posts=posts,name=name,profileURL=profileURL)
+	return render_template('profile.html',username=userUsername,posts=posts,name=name,profileURL=profileURL)
+
+
+@app.errorhandler(404)
+def page_not_found(error):
+	return render_template('404.html'), 404
 
 #def connect_db():
 #	return sqlite3.connect(app.database)
