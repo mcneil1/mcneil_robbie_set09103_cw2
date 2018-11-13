@@ -17,11 +17,14 @@
 		</div></td>
 	</tr>
 </table>
-<form method="post">
-	<input type="text" placeholder="Title" name="title" required>
-	<input type="text" placeholder="Message" name="body" required>
-	<button type="submit" class="postbtn" value="Post">Post</button>
-</form>
+
+<div>
+	<form method="post">
+		<input type="text" placeholder="Title" name="title" required>
+		<input type="text" placeholder="Message" name="body" required>
+		<button type="submit" class="postbtn" value="Post">Post</button>
+	</form>
+</div>
 <hr>
 {% for post in posts %}
 	<div id="rcorners">
@@ -39,7 +42,8 @@
 	</div>
         {% endfor %}
 
-
 </div>
 
 {% endblock %}
+
+

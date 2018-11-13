@@ -43,7 +43,7 @@ def home():
 	posts = db.session.query(UserPosts).all()
 	posts.reverse()
 	userUsername = session['username']
-	profileURL = "http://set09103.napier.ac.uk:9159/profile/" + userUsername + "/" 
+	profileURL = "http://set09103.napier.ac.uk:9159/profile/" + userUsername + "/"
 	return render_template('index.html',posts=posts,profileURL=profileURL)
 
 
@@ -115,9 +115,13 @@ def register():
 @login_required
 def profile(username):
 		
-	user = UserDB.query.filter_by(email=session['email']).first()
-	name = user.first_name + " " + user.last_name	
+	user = UserDB.query.filter_by(username=username).first()
+	username = username
+
 	userUsername = session['username']
+	thisUser = UserDB.query.filter_by(username=userUsername).first()
+
+	name = user.first_name + " " + user.last_name	
 	profileURL = "http://set09103.napier.ac.uk:9159/profile/" + userUsername + "/"
 	email = session['email']
 
@@ -129,10 +133,10 @@ def profile(username):
 		db.session.add(post)
 		db.session.commit()
 
-	posts = db.session.query(UserPosts).filter_by(author_email=email).all()
+	posts = db.session.query(UserPosts).filter_by(author_email=user.email).all()
 	posts.reverse()
  
-	return render_template('profile.html',user=user,username=userUsername,posts=posts,name=name,profileURL=profileURL)
+	return render_template('profile.html',user=user,username=username,posts=posts,name=name,profileURL=profileURL)
 
 
 @app.errorhandler(404)
