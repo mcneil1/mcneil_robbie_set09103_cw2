@@ -29,7 +29,7 @@ class UserDB(db.Model):
 		'UserDB', secondary=followers,
 		primaryjoin=(followers.c.follower_email == email),
 		secondaryjoin=(followers.c.followed_email == email),
-	 	backref=db.backref('followers', lazy='dynamic'))
+	 	backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
 
 
 	def __init__(self,email,username,first_name,last_name,password):
@@ -45,10 +45,17 @@ class UserDB(db.Model):
             digest, size)
 
 	def follow(self, user):
-		self.followed.append(user)
+		if not self.is_following(user):
+			self.followed.append(user)
+			return self
 
 	def unfollow(self, user):
-		self.followed.remove(user)
+		if self.is_following(user):
+			self.followed.remove(user)
+			return self
+	
+	def is_following(self, user):
+		return self.followed.filter(followers.c.followed_email == user.email).count() > 0
 
 	def followed_posts(self):
 		followed = UserPosts.query.join(

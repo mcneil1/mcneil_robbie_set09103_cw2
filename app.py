@@ -113,33 +113,37 @@ def register():
 			error = 'Username is taken!'
 	return render_template('signup.html', error=error)
 
-@app.route('/profile/<username>/', methods=['GET','POST'])         
+@app.route('/profile/<username>/')         
 @login_required
 def profile(username):
-		
+
 	user = UserDB.query.filter_by(username=username).first()
-	username = username
 
 	userUsername = session['username']
 	thisUser = UserDB.query.filter_by(username=userUsername).first()
-
+	
+	if user is None:
+		return render_template('404.html')
+	 
 	name = user.first_name + " " + user.last_name	
 	profileURL = "http://set09103.napier.ac.uk:9159/profile/" + userUsername + "/"
 	email = session['email']
 
-	if request.method == 'POST':
-		title = request.form['title']
-		body = request.form['body']
-		date = datetime.now()
-		post = UserPosts(header=title,body=body,date=date,author_email=email)
-		db.session.add(post)
-		db.session.commit()
-
 	posts = db.session.query(UserPosts).filter_by(author_email=user.email).all()
 	posts.reverse()
  
-	return render_template('profile.html',user=user,username=username,posts=posts,name=name,profileURL=profileURL)
+	return render_template('profile.html',thisUser=thisUser,user=user,username=username,posts=posts,name=name,profileURL=profileURL)
 
+
+@app.route('/explore/')
+@login_required
+def explore():
+	userUsername = session['username']
+	profileURL = "http://set09103.napier.ac.uk:9159/profile/" + userUsername + "/"
+	posts = db.session.query(UserPosts).all()
+	posts.reverse()
+	return render_template('explore.html',profileURL=profileURL,posts=posts)
+	
 
 @app.route('/follow/<username>/')
 @login_required
@@ -148,14 +152,14 @@ def follow(username):
 	thisUser = session['username']
 	current_user = UserDB.query.filter_by(username=thisUser).first()
 	if user is None:
-		flash('User {} not found.'.format(username))
+		flash('User @{} not found.'.format(username))
 		return redirect(url_for('home'))
 	if user == current_user:
 		flash('You cannot follow yourself.')
 		return redirect(url_for('profile', username = username))
 	current_user.follow(user)
 	db.session.commit()
-	flash('You are now following {}!'.format(username))
+	flash('You are now following @{}!'.format(username))
 	return redirect(url_for('profile', username=username))
 
 
@@ -166,14 +170,14 @@ def unfollow(username):
         thisUser = session['username']
         current_user = UserDB.query.filter_by(username=thisUser).first()
         if user is None:
-                flash('User {} not found.'.format(username))
+                flash('User @{} not found.'.format(username))
                 return redirect(url_for('home'))
         if user == current_user:
                 flash('You cannot unfollow yourself.')
                 return redirect(url_for('profile', username = username))
         current_user.unfollow(user)
         db.session.commit()
-        flash('You are no longer following {}!'.format(username))
+        flash('You are no longer following @{}!'.format(username))
         return redirect(url_for('profile', username=username))
 
 

@@ -4,8 +4,8 @@
 
 
 <ul>
-	<li><a class="active" href="http://set09103.napier.ac.uk:9159/">Home</a></li>
-	<li><a href="http://set09103.napier.ac.uk:9159/explore/">Explore</a></li>
+	<li><a  href="http://set09103.napier.ac.uk:9159/">Home</a></li>
+	<li><a class="active" href="http://set09103.napier.ac.uk:9159/explore/">Explore</a></li>
  	<li><a href={{ profileURL }}>My Profile</a></li>
 	<li><a href="http://set09103.napier.ac.uk:9159/logout/">Log out</a></li>
 </ul>
@@ -17,13 +17,8 @@
 	{% for messsage in get_flashed_messages() %}
                 {{ message }}
         {% endfor %}
-	<h1>welcome to FriendSpot!</h1>
-	<h3>Share a post:</h3>
-	<form method="post">
-		<input type="text" placeholder="Title" name="title" required>	
-		<input type="text" placeholder="Message" name="body" required>
-		<button type="submit" class="postbtn" value="Post">Post</button>
-	</form>
+	<h1>Explore</h1>
+	<h3>Recent posts from around the world</h3>
 	<hr>	
 	<br>
 	{% for post in posts %}
