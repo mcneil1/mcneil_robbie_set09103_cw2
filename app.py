@@ -31,17 +31,19 @@ def login_required(f):
 @app.route('/', methods=['GET', 'POST'])
 @login_required
 def home():
+
+	email = session['email']
+	current_user = UserDB.query.filter_by(email = email).first()
 	if request.method == 'POST':
 		title = request.form['title']
 		body = request.form['body']
 		date = datetime.now()
-		email = session['email']
+
 		post = UserPosts(header=title,body=body,date=date,author_email=email)
 		db.session.add(post)
 		db.session.commit()
 
-	posts = db.session.query(UserPosts).all()
-	posts.reverse()
+	posts = current_user.followed_posts().all()
 	userUsername = session['username']
 	profileURL = "http://set09103.napier.ac.uk:9159/profile/" + userUsername + "/"
 	return render_template('index.html',posts=posts,profileURL=profileURL)
@@ -137,6 +139,43 @@ def profile(username):
 	posts.reverse()
  
 	return render_template('profile.html',user=user,username=username,posts=posts,name=name,profileURL=profileURL)
+
+
+@app.route('/follow/<username>/')
+@login_required
+def follow(username):
+	user = UserDB.query.filter_by(username=username).first()
+	thisUser = session['username']
+	current_user = UserDB.query.filter_by(username=thisUser).first()
+	if user is None:
+		flash('User {} not found.'.format(username))
+		return redirect(url_for('home'))
+	if user == current_user:
+		flash('You cannot follow yourself.')
+		return redirect(url_for('profile', username = username))
+	current_user.follow(user)
+	db.session.commit()
+	flash('You are now following {}!'.format(username))
+	return redirect(url_for('profile', username=username))
+
+
+@app.route('/unfollow/<username>/')
+@login_required
+def unfollow(username):
+        user = UserDB.query.filter_by(username=username).first()
+        thisUser = session['username']
+        current_user = UserDB.query.filter_by(username=thisUser).first()
+        if user is None:
+                flash('User {} not found.'.format(username))
+                return redirect(url_for('home'))
+        if user == current_user:
+                flash('You cannot unfollow yourself.')
+                return redirect(url_for('profile', username = username))
+        current_user.unfollow(user)
+        db.session.commit()
+        flash('You are no longer following {}!'.format(username))
+        return redirect(url_for('profile', username=username))
+
 
 
 @app.errorhandler(404)
